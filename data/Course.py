@@ -1,30 +1,59 @@
-class Course():
+from config.db import engine
+from .Subject import Subject
+from .Professor import Professor
+from .DataBaseAccessible import DataBaseAccessible
+
+from sqlalchemy.sql import text
+
+class Course(DataBaseAccessible):
     '''Represents an object of type Course.'''
     
     # Constructor method
-    def __init__(self):
+    def __init__(self, group_number, subject, credits, professor, time_slot_one, time_slot_two):
         '''Initializes an object of the Course class.'''
 
-        self._group_number = None
-        self._subject = None
-        self._professor = None
-        self._time_slot_one = None
-        self._time_slot_two = None
+        self._group_number = group_number
+        self._subject = subject
+        self._credits = credits
+        self._professor = professor
+        self._time_slot_one = time_slot_one
+        self._time_slot_two = time_slot_two
 
     # Getters methods
     def get_group_number(self):
-        return self.get_group_number
+        return self._group_number
     
     def get_subject(self):
         return self._subject
+    
+    def get_credits(self):
+        return self._credits
     
     def get_professor(self):
         return self._professor
     
     def get_time_slot_one(self):
-        return self.get_time_slot_one
+        return self._time_slot_one
     
     def get_time_slot_two(self):
-        return self.get_time_slot_two
+        return self._time_slot_two
     
+    @classmethod
+    def retrieve_from_database(cls, filters={'SUBJECT_ID':None}):
+        courses = []
+        query = 'SELECT * FROM all_course_data'
+        if filters['SUBJECT_ID']:
+            query += f' WHERE subj_id = {filters["SUBJECT_ID"]}'
+        
+        with engine.connect() as conn:
+            results = conn.execute(text(query + ' ORDER BY group_number;'))
+            for result in results:
+                subject = Subject.retrieve_from_database_by_id(result[0])
+                professor = Professor(result[4])
+                courses.append(cls(result[1], subject, int(result[3]), professor, result[5], result[6]))
+        
+        return courses
+    
+    def __str__(self):
+        return f'Grupo = {self._group_number}, Materia = {self._subject.get_name()}'
     # Methods
