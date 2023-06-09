@@ -4,6 +4,7 @@ from tabulate import tabulate
 from data.Course import Course
 from data.Subject import Subject
 from data.Faculty import Faculty
+from exceptions.NoRecordsFound import NoRecordsFound
 
 
 class CLI():
@@ -40,30 +41,38 @@ class CLI():
         filters_dict = self.ask_filters()
         os.system('cls')
         subjects = Subject.retrieve_from_database(filters=filters_dict)
-        subjects = [
-            [subject.get_id(), subject.get_name(), subject.get_credits(), subject.get_faculty().get_name()]
-            for subject in subjects
-            ]
+        if subjects:
+            subjects = [
+                [subject.get_id(), subject.get_name(), subject.get_credits(), subject.get_faculty().get_name()]
+                for subject in subjects
+                ]
 
-        print(tabulate(
-            subjects, headers=['id', 'Nombre', 'Creditos', 'Facultad'], tablefmt='presto'
-        ))
+            print(tabulate(
+                subjects, headers=['id', 'Nombre', 'Creditos', 'Facultad'], tablefmt='presto'
+            ))
+        else:
+            raise NoRecordsFound(
+                'No se encontraron asignaturas que cumplan los criterios de seleccion establecidos, por favor vuelva a intentar'
+                )
     
     def show_courses(self):
         self.show_subjects()
         subj_id = int(input('Ingrese el id de la asignatura la cual desea consultar oferta: '))
         os.system('cls')
         courses = Course.retrieve_from_database(filters={'SUBJECT_ID': subj_id})
-        courses = [
-            [course.get_group_number(), course.get_subject().get_name(),
-             course.get_credits(), course.get_professor().get_name(), 
-             course.get_time_slot_one(), course.get_time_slot_two()]
-             for course in courses
-        ]
+        if courses:
+            courses = [
+                [course.get_group_number(), course.get_subject().get_name(),
+                course.get_credits(), course.get_professor().get_name(), 
+                course.get_time_slot_one(), course.get_time_slot_two()]
+                for course in courses
+            ]
 
-        print(tabulate(
-            courses, headers=['Grupo', 'Asignatura', 'Creditos', 'Profesor', 'Dia 1', 'Dia 2'], tablefmt='presto'
-        ))
+            print(tabulate(
+                courses, headers=['Grupo', 'Asignatura', 'Creditos', 'Profesor', 'Dia 1', 'Dia 2'], tablefmt='presto'
+            ))
+        else:
+            raise NoRecordsFound(f'No se encontraron cursos de la materia con id {subj_id}. Por favor revise los datos y vuelva a intentar')
 
 
     def show_faculties(self):
@@ -80,12 +89,18 @@ class CLI():
         while True:
             option = self.get_option()
 
-            if option == '1':
-                self.show_faculties()
-            elif option == '2':
-                self.show_courses()
-            elif option == '3':
-                break
-            else:
-                print('Opcion invalida')
+            try:
+                if option == '1':
+                    self.show_faculties()
+                elif option == '2':
+                    self.show_courses()
+                elif option == '3':
+                    break
+                else:
+                    print('Opcion invalida')
+            except ValueError:
+                print('Por favor ingrese solo datos en un formato valido.')
+            except NoRecordsFound as e:
+                print(e)
+            
             input('Presione enter para continuar...')

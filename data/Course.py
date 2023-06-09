@@ -53,7 +53,21 @@ class Course(DataBaseAccessible):
                 courses.append(cls(result[1], subject, int(result[3]), professor, result[5], result[6]))
         
         return courses
-    
+
+    @classmethod
+    def retrieve_from_database_by_id(cls, id):
+        '''Courses have a composite pkey, so id must be a touple with 2 elements
+            1) group number
+            2) subj id
+        '''    
+        query = f'SELECT * FROM all_course_data WHERE group_number = {id[0]} AND subj_id = {id[1]};'
+        
+        with engine.connect() as conn:
+            result = conn.execute(text(query)).first()
+            subject = Subject.retrieve_from_database_by_id(result[0])
+            professor = Professor(result[4])
+            return cls(result[1], subject, int(result[3]), professor, result[5], result[6])
+        
     def __str__(self):
         return f'Grupo = {self._group_number}, Materia = {self._subject.get_name()}'
     # Methods

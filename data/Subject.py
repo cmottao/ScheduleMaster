@@ -37,7 +37,11 @@ class Subject(DataBaseAccessible):
             query += f' AND credits = {filters["CREDITS"]}'
 
         with engine.connect() as conn:
-            faculty = Faculty.retrieve_from_database(filters={'FACULTY_ID': filters['FACULTY_ID']})[0]
+            faculty = Faculty.retrieve_from_database(filters={'FACULTY_ID': filters['FACULTY_ID']})
+            if faculty:
+                faculty = faculty[0] 
+            else:
+                return None # Faculty does not exists, so no courses assosiated with that faculty
             results = conn.execute(text(query + ';'))
             for result in results:
                 #faculty = Faculty()
