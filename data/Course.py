@@ -1,5 +1,6 @@
 from config.db import engine
 from .Subject import Subject
+from .TimeSlot import TimeSlot
 from .Professor import Professor
 from .DataBaseAccessible import DataBaseAccessible
 
@@ -50,7 +51,10 @@ class Course(DataBaseAccessible):
             for result in results:
                 subject = Subject.retrieve_from_database_by_id(result[0])
                 professor = Professor(result[4])
-                courses.append(cls(result[1], subject, int(result[3]), professor, result[5], result[6]))
+                time_slot1 = TimeSlot.from_str_repr(result[5])
+                time_slot2 = TimeSlot.from_str_repr(result[6])
+
+                courses.append(cls(result[1], subject, int(result[3]), professor, time_slot1, time_slot2))
         
         return courses
 
@@ -66,7 +70,9 @@ class Course(DataBaseAccessible):
             result = conn.execute(text(query)).first()
             subject = Subject.retrieve_from_database_by_id(result[0])
             professor = Professor(result[4])
-            return cls(result[1], subject, int(result[3]), professor, result[5], result[6])
+            time_slot1 = TimeSlot.from_str_repr(result[5])
+            time_slot2 = TimeSlot.from_str_repr(result[6])
+            return cls(result[1], subject, int(result[3]), professor, time_slot1, time_slot2)
         
     def __str__(self):
         return f'Grupo = {self._group_number}, Materia = {self._subject.get_name()}'
