@@ -1,8 +1,8 @@
 from config.db import engine
 from .Subject import Subject
-from .TimeSlot import TimeSlot
 from .Professor import Professor
 from .DataBaseAccessible import DataBaseAccessible
+from .TimeSlot import TimeSlot
 
 from sqlalchemy.sql import text
 
@@ -39,10 +39,14 @@ class Course(DataBaseAccessible):
     def get_time_slot_two(self):
         return self._time_slot_two
     
+    # Methods
     @classmethod
-    def retrieve_from_database(cls, filters={'SUBJECT_ID':None}):
+    def retrieve_from_database(cls, filters={'SUBJECT_ID': None}):
+        '''Retrieves courses from the database based on the specified filters.'''
+
         courses = []
         query = 'SELECT * FROM all_course_data'
+
         if filters['SUBJECT_ID']:
             query += f' WHERE subj_id = {filters["SUBJECT_ID"]}'
         
@@ -60,10 +64,14 @@ class Course(DataBaseAccessible):
 
     @classmethod
     def retrieve_from_database_by_id(cls, id):
-        '''Courses have a composite pkey, so id must be a touple with 2 elements
-            1) group number
-            2) subj id
+        '''Retrieves a course from the database based on the specified composite ID.
+
+            Args:
+                id: A tuple with two elements representing the composite ID of the course.
+                    1) Group number
+                    2) Subject ID
         '''    
+
         query = f'SELECT * FROM all_course_data WHERE group_number = {id[0]} AND subj_id = {id[1]};'
         
         with engine.connect() as conn:
@@ -72,8 +80,10 @@ class Course(DataBaseAccessible):
             professor = Professor(result[4])
             time_slot1 = TimeSlot.from_str_repr(result[5])
             time_slot2 = TimeSlot.from_str_repr(result[6])
+
             return cls(result[1], subject, int(result[3]), professor, time_slot1, time_slot2)
         
     def __str__(self):
+        '''Returns a string representation of the Course object.'''
+
         return f'Grupo = {self._group_number}, Materia = {self._subject.get_name()}'
-    # Methods

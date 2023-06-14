@@ -29,10 +29,14 @@ class Subject(DataBaseAccessible):
     def get_faculty(self):
         return self._faculty
     
+    # Methods
     @classmethod
-    def retrieve_from_database(cls, filters={'FACULTY_ID':None, 'CREDITS':None}):
+    def retrieve_from_database(cls, filters={'FACULTY_ID': None, 'CREDITS': None}):
+        '''Retrieves subjects from the database based on the specified filters.'''
+
         subjects = []
         query = f'SELECT * FROM subjects WHERE faculty_id = {filters["FACULTY_ID"]}'
+
         if filters['CREDITS']:
             query += f' AND credits = {filters["CREDITS"]}'
 
@@ -44,22 +48,23 @@ class Subject(DataBaseAccessible):
                 return None # Faculty does not exists, so no courses assosiated with that faculty
             results = conn.execute(text(query + ';'))
             for result in results:
-                #faculty = Faculty()
                 subjects.append(cls(result[0], result[1], result[2], faculty))
         
         return subjects
     
     @classmethod
     def retrieve_from_database_by_id(cls, id):
+        ''''Retrieves a course from the database based on the specified ID.'''
+
         query = f'SELECT * FROM subjects WHERE id = {id};'
 
         with engine.connect() as conn:
             result = conn.execute(text(query)).first()
             faculty = Faculty.retrieve_from_database(filters={'FACULTY_ID':result[3]})
+
             return cls(result[0], result[1], result[2], faculty)
 
-    
     def __str__(self):
-        return f'id = {self._id}, nombre = {self._name}, creditos = {self._credits}, facultad={self._faculty.get_name()}'
-    
-    # Methods
+        '''Returns a string representation of the Subject object.'''
+
+        return f'Id = {self._id}, Nombre = {self._name}, Creditos = {self._credits}, Facultad={self._faculty.get_name()}'

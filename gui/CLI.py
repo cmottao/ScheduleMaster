@@ -6,26 +6,31 @@ from data.Subject import Subject
 from data.Faculty import Faculty
 from exceptions.NoRecordsFound import NoRecordsFound
 
-
 class CLI():
-    '''Command line interface for the application'''
+    '''Command line interface of the ScheduleMaster app.'''
     
     def show_menu(self):
+        '''Displays the main menu.'''
+
         os.system('cls')
-        print('Bienvrenido/a a ScheduleMaster CLI version\n')
+        print('Bienvenido a ScheduleMaster CLI version')
         print('1 -> Consultar listado de facultades')
         print('2 -> Consultar oferta de cursos')
         print('3 -> Salir de la aplicacion')
         print('Seleccione una opcion')
     
     def get_option(self):
+        '''Gets the user's selected option from the main menu.'''
+
         self.show_menu()
         option = input('>>> ')
 
         return option
 
     def ask_filters(self):
-        ''''This function will ask user for faculty id and number of credits to show a course, and return the filers dict'''
+        '''Asks the user for a faculty ID and the number of credits for the subject to apply as filters for course querying. 
+            Returns a dictionary containing the filters.'''
+
         os.system('cls')
         faculty_id = input('Id de facultad: ')
         n_credits = input('Numero de creditos de asignatura (deje en blanco si desea omitir este filtro): ')
@@ -38,24 +43,25 @@ class CLI():
         return filters
 
     def show_subjects(self):
+        '''Displays the subjects based on the user-defined filters.'''
+
         filters_dict = self.ask_filters()
         os.system('cls')
         subjects = Subject.retrieve_from_database(filters=filters_dict)
+
         if subjects:
             subjects = [
                 [subject.get_id(), subject.get_name(), subject.get_credits(), subject.get_faculty().get_name()]
                 for subject in subjects
-                ]
+            ]
 
-            print(tabulate(
-                subjects, headers=['id', 'Nombre', 'Creditos', 'Facultad'], tablefmt='presto'
-            ))
+            print(tabulate(subjects, headers=['id', 'Nombre', 'Creditos', 'Facultad'], tablefmt='presto'))
         else:
-            raise NoRecordsFound(
-                'No se encontraron asignaturas que cumplan los criterios de seleccion establecidos, por favor vuelva a intentar'
-                )
+            raise NoRecordsFound('No se encontraron asignaturas que cumplan los criterios de seleccion establecidos, por favor vuelva a intentar')
     
     def show_courses(self):
+        '''Displays the courses for a selected subject.'''
+
         self.show_subjects()
         subj_id = int(input('Ingrese el id de la asignatura la cual desea consultar oferta: '))
         os.system('cls')
@@ -68,24 +74,22 @@ class CLI():
                 for course in courses
             ]
 
-            print(tabulate(
-                courses, headers=['Grupo', 'Asignatura', 'Creditos', 'Profesor', 'Dia 1', 'Dia 2'], tablefmt='presto'
-            ))
+            print(tabulate(courses, headers=['Grupo', 'Asignatura', 'Creditos', 'Profesor', 'Dia 1', 'Dia 2'], tablefmt='presto'))
         else:
             raise NoRecordsFound(f'No se encontraron cursos de la materia con id {subj_id}. Por favor revise los datos y vuelva a intentar')
 
-
     def show_faculties(self):
+        '''Displays the list of faculties.'''
+
         os.system('cls')
         faculties = Faculty.retrieve_from_database()
         faculties = [[faculty.get_id(), faculty.get_name()] for faculty in faculties]
-        print(tabulate(
-            faculties, headers=['id', 'Nombre'], tablefmt='presto'
-        ))
 
-
+        print(tabulate(faculties, headers=['id', 'Nombre'], tablefmt='presto'))
 
     def run(self):
+        '''Executes the main loop of the ScheduleMaster CLI.'''
+
         while True:
             option = self.get_option()
 

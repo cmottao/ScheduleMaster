@@ -4,6 +4,7 @@ class Professor():
     # Constructor method
     def __init__(self, name):
         '''Initializes an object of the Professor class.'''
+        
         self._name = name
 
     # Getters methods

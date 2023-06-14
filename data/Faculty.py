@@ -20,8 +20,11 @@ class Faculty(DataBaseAccessible):
     def get_name(self):
         return self._name
 
+    # Methods
     @classmethod
     def retrieve_from_database(cls, filters={'FACULTY_ID': None}):
+        '''Retrieves faculties from the database based on the specified filters.'''
+
         faculties = []
         query = 'SELECT * FROM faculties'
 
@@ -36,6 +39,6 @@ class Faculty(DataBaseAccessible):
         return faculties
     
     def __str__(self):
-        return f'{self._id}, {self._name}'
+        '''Returns a string representation of the Faculty object.'''
 
-    # Methods
+        return f'{self._id}, {self._name}'
