@@ -10,5 +10,3 @@ class Professor():
     # Getters methods
     def get_name(self):
         return self._name
-    
-    # Methods

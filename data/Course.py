@@ -1,10 +1,12 @@
+from sqlalchemy.sql import text
+
 from config.db import engine
-from .Subject import Subject
-from .Professor import Professor
+
 from .DataBaseAccessible import DataBaseAccessible
+from .Professor import Professor
+from .Subject import Subject
 from .TimeSlot import TimeSlot
 
-from sqlalchemy.sql import text
 
 class Course(DataBaseAccessible):
     '''Represents an object of type Course.'''
@@ -62,6 +64,7 @@ class Course(DataBaseAccessible):
         
         return courses
 
+
     @classmethod
     def retrieve_from_database_by_id(cls, id):
         '''Retrieves a course from the database based on the specified composite ID.
@@ -82,8 +85,3 @@ class Course(DataBaseAccessible):
             time_slot2 = TimeSlot.from_str_repr(result[6])
 
             return cls(result[1], subject, int(result[3]), professor, time_slot1, time_slot2)
-        
-    def __str__(self):
-        '''Returns a string representation of the Course object.'''
-
-        return f'Grupo = {self._group_number}, Materia = {self._subject.get_name()}'

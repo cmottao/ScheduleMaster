@@ -1,7 +1,9 @@
+from sqlalchemy.sql import text
+
 from config.db import engine
+
 from .DataBaseAccessible import DataBaseAccessible
 
-from sqlalchemy.sql import text
 
 class Faculty(DataBaseAccessible):
     '''Represents an object of type Faculty.'''
@@ -37,8 +39,3 @@ class Faculty(DataBaseAccessible):
                 faculties.append(cls(result[0], result[1]))
         
         return faculties
-    
-    def __str__(self):
-        '''Returns a string representation of the Faculty object.'''
-
-        return f'{self._id}, {self._name}'

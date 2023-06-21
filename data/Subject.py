@@ -1,8 +1,10 @@
-from config.db import engine
-from .Faculty import Faculty
-from .DataBaseAccessible import DataBaseAccessible
-
 from sqlalchemy.sql import text
+
+from config.db import engine
+
+from .DataBaseAccessible import DataBaseAccessible
+from .Faculty import Faculty
+
 
 class Subject(DataBaseAccessible):
     '''Initializes an object of type Subject.'''
@@ -52,6 +54,7 @@ class Subject(DataBaseAccessible):
         
         return subjects
     
+
     @classmethod
     def retrieve_from_database_by_id(cls, id):
         ''''Retrieves a course from the database based on the specified ID.'''
@@ -64,7 +67,11 @@ class Subject(DataBaseAccessible):
 
             return cls(result[0], result[1], result[2], faculty)
 
-    def __str__(self):
-        '''Returns a string representation of the Subject object.'''
 
-        return f'Id = {self._id}, Nombre = {self._name}, Creditos = {self._credits}, Facultad={self._faculty.get_name()}'
+    def __eq__(self, other):
+        '''Dunder method to now if two time slots are the same.'''
+
+        if self._id == other.get_id():
+            return True
+        else:
+            return False

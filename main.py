@@ -1,5 +1,5 @@
-from gui.CLI import CLI
+from gui.MainWindow import MainWindow
 
 if __name__ == '__main__':
-    ui = CLI()
+    ui = MainWindow()
     ui.run()
