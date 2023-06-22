@@ -81,7 +81,8 @@ class MainWindow(tk.Tk):
     def download_schedule(self):
         '''Downloads the schedule that the user has set up.'''
 
-        pass
+        schedule = self.controller.tabulate_schedule()
+        print(schedule)
 
 
     def run(self):
