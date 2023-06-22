@@ -32,10 +32,10 @@ class Schedule():
         ''' Checks if a course is valid to be added to the schedule.'''
 
         for course in self._courses:
-            if course_to_add.get_time_slot_one() == course.get_time_slot_one() or course_to_add.get_time_slot_one() == course.get_time_slot_two():
+            if course_to_add.get_subject() == course.get_subject():
+                return 'same subject'
+            elif course_to_add.get_time_slot_one() == course.get_time_slot_one() or course_to_add.get_time_slot_one() == course.get_time_slot_two():
                 return 'croice'
             elif course_to_add.get_time_slot_two() == course.get_time_slot_one() or course_to_add.get_time_slot_two() == course.get_time_slot_two():
-                return 'croice'
-            elif course_to_add.get_subject() == course.get_subject():
-                return 'same subject'
+                return 'croice'  
         return 'valid'

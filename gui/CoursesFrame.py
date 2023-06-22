@@ -167,6 +167,7 @@ class CoursesFrame(ttk.Frame):
         '''Adds the selected course to the schedule.'''
 
         if not self._trv_courses.selection():
+            messagebox.showinfo('Aviso', 'Seleccione un curso.')
             return
         
         course_selected = self._trv_courses.selection()
@@ -177,7 +178,9 @@ class CoursesFrame(ttk.Frame):
         if validation == 'valid':
             self._master.controller.add_course_to_schedule(course)
             self._master.frm_schedule.update_trv_schedule()
+            messagebox.showinfo('Aviso', 'Curso agregado exitosamente.')
         elif validation == 'croice':
-            messagebox.showinfo('Aviso', 'No es posible agregar el curso, hay un cruce con otro.')
+            messagebox.showinfo('Aviso', 'No es posible agregar el curso, hay un conflicto de horario con otro curso.')
         else:
-            messagebox.showinfo('Aviso', 'No es posible agregar el curso, ya hay un curso con la misma asignatura.')
+            messagebox.showinfo('Aviso', 'No es posible agregar el curso, ya existe un curso con la misma asignatura.')
+        self._win_courses.destroy()

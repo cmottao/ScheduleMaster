@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.filedialog import asksaveasfilename
 
 from business.Controller import Controller
 
@@ -78,11 +79,17 @@ class MainWindow(tk.Tk):
         self.frm_schedule.grid(row=1, column=0, sticky='nsew')
 
 
-    def download_schedule(self):
+    def _download_schedule(self):
         '''Downloads the schedule that the user has set up.'''
 
-        schedule = self.controller.tabulate_schedule()
-        print(schedule)
+        filepath = asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")], title='ScheduleMaster - Download schedule')
+
+        if not filepath:
+            return
+        
+        with open(filepath, mode="w", encoding="utf-8") as output_file:
+            text = self.controller.tabulate_schedule()
+            output_file.write(text)
 
 
     def run(self):

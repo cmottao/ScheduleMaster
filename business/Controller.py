@@ -1,10 +1,10 @@
 import datetime
 
+from tabulate import tabulate
+
 from business.Schedule import Schedule
 from data.Course import Course
 from data.Subject import Subject
-
-from tabulate import tabulate
 
 
 class Controller():
@@ -60,21 +60,20 @@ class Controller():
 
 
     def tabulate_schedule(self):
-        '''Returns the string representation of a kdjfhgjds'''
+        '''This method generates a tabular representation of a schedule based on the provided courses and their time slots.'''
+
         courses = self._schedule.get_courses()
         start_hours = [7, 9, 11, 14, 16, 18] # These are the hours when a course can start, will work as row indexes
         week_days = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES']
         table = [[' ' for _ in range(5)] for _ in range(6)] # Starts with an empty mnatrix
         
-        #filling the matrix
-
+        # Filling the matrix
         for course in courses:
             subject_name = course.get_subject().get_name()
             slot_1 = course.get_time_slot_one()
             slot_2 = course.get_time_slot_two()
 
-            #Start time gives us the row index, week day the column one
-
+            # Start time gives us the row index, week day the column one
             table[start_hours.index(slot_1.get_starts_at().hour)][week_days.index(slot_1.get_week_day())] = subject_name
             table[start_hours.index(slot_2.get_starts_at().hour)][week_days.index(slot_2.get_week_day())] = subject_name
 
