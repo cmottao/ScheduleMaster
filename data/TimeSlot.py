@@ -39,7 +39,7 @@ class TimeSlot():
 
 
     def __eq__(self, other):
-        '''Dunder method to now if two time slots are the same.'''
+        '''Dunder method to know if two time slots are the same.'''
 
         if self._week_day == other.get_week_day() and self._starts_at == other.get_starts_at() and self._ends_at == other.get_ends_at():
             return True
